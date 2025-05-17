@@ -1,4 +1,4 @@
--- before optimizing
+-- BEFORE OPTIMIZATION 
 EXPLAIN ANALYZE
 SELECT 
     b.booking_id,
@@ -16,14 +16,18 @@ SELECT
 FROM Booking b
 JOIN Property p ON b.property_id = p.property_id
 JOIN User u ON b.user_id = u.user_id
-LEFT JOIN Payment pay ON pay.booking_id = b.booking_id;
+LEFT JOIN Payment pay ON pay.booking_id = b.booking_id
+WHERE b.status = 'confirmed'
+AND p.location = 'Nairobi';
 
--- indexes for optimizing
+-- ADD INDEXES to improve performance
 CREATE INDEX idx_booking_property_id ON Booking(property_id);
 CREATE INDEX idx_booking_user_id ON Booking(user_id);
+CREATE INDEX idx_booking_status ON Booking(status);
+CREATE INDEX idx_property_location ON Property(location);
 CREATE INDEX idx_payment_booking_id ON Payment(booking_id);
 
--- query after adding indexes, making it optimized
+-- AFTER OPTIMIZATION (query using same WHERE and AND with indexes now active)
 EXPLAIN ANALYZE
 SELECT 
     b.booking_id,
@@ -41,5 +45,6 @@ SELECT
 FROM Booking b
 JOIN Property p ON b.property_id = p.property_id
 JOIN User u ON b.user_id = u.user_id
-LEFT JOIN Payment pay ON pay.booking_id = b.booking_id;
-   
+LEFT JOIN Payment pay ON pay.booking_id = b.booking_id
+WHERE b.status = 'confirmed'
+AND p.location = 'Nairobi';
