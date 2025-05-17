@@ -13,3 +13,13 @@ SELECT
 FROM Property p
 LEFT JOIN Booking b ON p.property_id = b.property_id
 GROUP BY p.property_id, p.name;
+
+-- Query for Assign a unique row number to each booking per user using ROW_NUMBER()
+SELECT
+    b.booking_id,
+    b.user_id,
+    b.start_date,
+    b.end_date,
+    ROW_NUMBER() OVER (PARTITION BY b.user_id ORDER BY b.start_date) AS booking_number_per_user
+FROM 
+    Booking b;
